@@ -2,37 +2,47 @@ from bs4 import BeautifulSoup
 import requests
 import re
 
-med_data = requests.get('https://www.netmeds.com/prescriptions').text
-soup = BeautifulSoup(med_data , 'lxml')
-# prescriptions = soup.find('div', class_='prescriptions_products').text
-# prescriptions = prescriptions.split()
+urls = []
+product_links = []
 
-# # print(prescriptions)
+def get_urls(drugs):
+	for drug in drugs:
+		temp_urls = drug.find_all('a')
 
-# categories = []
-# for i in range(len(prescriptions)):
-# 	if len(prescriptions[i]) > 1 and '(' not in prescriptions[i]:
-# 		categories.append(prescriptions[i])
-# # print(categories)
+		for temp in temp_urls:
+			urls.append(temp.get('href'))
 
-links = []
-prescriptions = soup.find_all('ul', class_='alpha-drug-list')	
 
-# print(prescriptions)
-for prescription in prescriptions:
-	link = prescription.find_all('a')
+def get_pages(urls):
+	for url in urls:
+		data = requests.get(url).text
+		page = BeautifulSoup(data, 'lxml')
+		product_list = page.find_all('li', class_='product-item')
+		# print(product_list)
 
-	for l in link:
-		links.append(l.get('href'))
-	   
+		
+		for product in product_list:
+			product_page = product.find_all('a')
 
-print(links)
+			for page in product_page:
+				product_links.append(page.get('href'))
 
-# links = []
 
-# for link in soup.find_all('a',class_='alpha-drug-list' , attrs={'href': re.compile("^https://")}):
-#     links.append(link.get('href'))
 
-# print(links)
+
+
+	        
+
+
+
+
+home_page = requests.get('https://www.netmeds.com/prescriptions').text
+soup = BeautifulSoup(home_page , 'lxml')
+drugs = soup.find_all('ul', class_='alpha-drug-list')	
+get_urls(drugs)
+
+get_pages(urls)
+
+
 
 
