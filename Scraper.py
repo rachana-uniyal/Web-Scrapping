@@ -28,6 +28,23 @@ def get_pages(urls):
 				product_links.append(page.get('href'))
 
 
+def get_product_details(product_links):
+
+	data = requests.get(product_links[0]).text
+	page = BeautifulSoup(data, 'lxml')
+	dt = page.find('div', class_='product-detail').text
+	ess = page.find('div', class_='essentials').text
+	print(dt)
+	print('**********************')
+	print(ess)
+	# product_details = page.find('div', class_='product-detail')
+	# print(product_details)
+
+	# for link in product_links:
+	# 	data = requests.get(link).text
+	# 	page = BeautifulSoup(data, 'lxml')
+	# 	product_details = page.find('div', class_='product-details')
+	# 	print(product_details)
 
 
 
@@ -43,6 +60,6 @@ get_urls(drugs)
 
 get_pages(urls)
 
-
+get_product_details(product_links)
 
 
